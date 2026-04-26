@@ -1,0 +1,57 @@
+# ---- Node / pnpm ----
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---- Build output ----
+dist/
+build/
+*.tsbuildinfo
+.vite/
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+.playwright/
+
+# ---- Env / secrets ----
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# ---- Prisma / local data ----
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+data/
+.tmp/
+
+# ---- Editor / OS ----
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- AI tooling / planning artifacts (kept local, not committed) ----
+.claude/
+.omc/
+.ai/
+.agent/
+docs/superpowers/
+docs/brainstorm/
+docs/plans/
+AGENTS.md
+CLAUDE.md
+*.plan.md
+*.brainstorm.md
+
+# ---- HR / task materials (kept local, not committed) ----
+task-telegram-bot-brief.txt
