@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  createdAt    DateTime @default(now())
+  cards        Card[]
+}
+
+model Card {
+  id                    String   @id @default(uuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id])
+  maskedPan             String
+  last4                 String
+  cardholderName        String
+  expiryMonth           Int
+  expiryYear            Int
+  currency              String
+  ledgerBalanceMinor    Int
+  availableBalanceMinor Int
+  status                String
+  type                  String
+  createdAt             DateTime @default(now())
+  authorizations        Authorization[]
+  transactions          Transaction[]
+
+  @@index([userId])
+}
+
+model Authorization {
+  id               String   @id @default(uuid())
+  cardId           String
+  card             Card     @relation(fields: [cardId], references: [id])
+  amountMinor      Int
+  direction        String
+  currency         String
+  merchantName     String
+  merchantCategory String
+  merchantCountry  String
+  merchantCity     String
+  status           String
+  declineReason    String?
+  authorizedAt     DateTime
+  expiresAt        DateTime
+  transactions     Transaction[]
+
+  @@index([cardId, authorizedAt])
+}
+
+model Transaction {
+  id               String         @id @default(uuid())
+  cardId           String
+  card             Card           @relation(fields: [cardId], references: [id])
+  authorizationId  String?
+  authorization    Authorization? @relation(fields: [authorizationId], references: [id])
+  amountMinor      Int
+  direction        String
+  currency         String
+  merchantName     String
+  merchantCategory String
+  merchantCountry  String
+  merchantCity     String
+  kind             String
+  description      String
+  postedAt         DateTime
+
+  @@index([cardId, postedAt])
+  @@index([authorizationId])
+}
