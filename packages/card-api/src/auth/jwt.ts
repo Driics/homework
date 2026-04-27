@@ -21,8 +21,9 @@ export async function signToken(
 export async function verifyToken(token: string, secret: string): Promise<TokenClaims> {
   const key = new TextEncoder().encode(secret);
   const { payload } = await jwtVerify(token, key, { algorithms: ['HS256'] });
-  if (typeof payload.sub !== 'string' || typeof payload.email !== 'string') {
+  const p = payload as { sub?: unknown; email?: unknown };
+  if (typeof p.sub !== 'string' || typeof p.email !== 'string') {
     throw new Error('Invalid token payload');
   }
-  return { sub: payload.sub, email: payload.email as string };
+  return { sub: p.sub, email: p.email };
 }
