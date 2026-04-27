@@ -1,11 +1,11 @@
-import { type LoggerOptions, pino } from 'pino';
+import { type Logger, type LoggerOptions, pino } from 'pino';
 
 export type CreateLoggerOptions = {
   level: string;
   pretty: boolean;
 };
 
-export function createLogger(opts: CreateLoggerOptions): pino.Logger {
+export function createLogger(opts: CreateLoggerOptions): Logger {
   const baseOptions: LoggerOptions = {
     level: opts.level,
     base: { service: 'card-api' },
