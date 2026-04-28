@@ -28,6 +28,20 @@ export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> 
   await app.register(requestIdPlugin);
   await app.register(errorHandlerPlugin);
   await app.register(authPlugin, { jwtSecret: opts.config.jwtSecret });
+
+  const rateLimitPlugin = await import('@fastify/rate-limit');
+  await app.register(rateLimitPlugin.default ?? rateLimitPlugin, {
+    max: 10,
+    timeWindow: '1 minute',
+    keyGenerator: (req) => (req.headers['x-forwarded-for'] as string) ?? req.ip,
+    allowList: (req) => !req.url.startsWith('/v1/auth/login'),
+  });
+  const corsPlugin = await import('@fastify/cors');
+  await app.register(corsPlugin.default ?? corsPlugin, {
+    origin: opts.config.corsOrigin,
+    methods: ['GET', 'POST'],
+  });
+
   await app.register(healthRoutes);
   await app.register(authRoutes(opts.config));
   await app.register(meRoutes);

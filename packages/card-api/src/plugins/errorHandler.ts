@@ -28,6 +28,12 @@ const plugin: FastifyPluginAsync = async (app) => {
       );
       return reply.code(400).send(wrapped.toJSON(requestId));
     }
+    const pluginErr = err as { statusCode?: number; message?: string };
+    if (pluginErr.statusCode && pluginErr.statusCode >= 400 && pluginErr.statusCode < 500) {
+      return reply
+        .code(pluginErr.statusCode)
+        .send({ code: 'CLIENT_ERROR', message: pluginErr.message ?? 'Client error', requestId });
+    }
     return reply.code(500).send({ code: 'INTERNAL', message: 'Internal server error', requestId });
   });
 
