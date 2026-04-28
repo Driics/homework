@@ -7,7 +7,7 @@ import {
   NotFoundError,
   UnauthorizedError,
   ValidationError,
-} from './errors.js';
+} from '../src/errors.js';
 
 describe('AppError hierarchy', () => {
   it('UnauthorizedError defaults to 401', () => {

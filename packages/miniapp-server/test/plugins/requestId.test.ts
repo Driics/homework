@@ -1,6 +1,6 @@
 import Fastify from 'fastify';
 import { describe, expect, it } from 'vitest';
-import { requestIdPlugin } from './requestId.js';
+import { requestIdPlugin } from '../../src/plugins/requestId.js';
 
 describe('requestIdPlugin', () => {
   it('assigns a UUID request id and echoes x-request-id', async () => {

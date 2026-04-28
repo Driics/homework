@@ -1,8 +1,13 @@
 import Fastify from 'fastify';
 import { describe, expect, it } from 'vitest';
-import { BadGatewayError, NotFoundError, UnauthorizedError, ValidationError } from '../errors.js';
-import { errorHandlerPlugin } from './errorHandler.js';
-import { requestIdPlugin } from './requestId.js';
+import {
+  BadGatewayError,
+  NotFoundError,
+  UnauthorizedError,
+  ValidationError,
+} from '../../src/errors.js';
+import { errorHandlerPlugin } from '../../src/plugins/errorHandler.js';
+import { requestIdPlugin } from '../../src/plugins/requestId.js';
 
 async function buildApp() {
   const app = Fastify();
