@@ -10,10 +10,25 @@ export const loginRoutes: FastifyPluginAsync = async (app) => {
     '/api/login',
     {
       preHandler: [app.verifyInitData],
+      config: {
+        rateLimit: {
+          max: 10,
+          timeWindow: '1 minute',
+          keyGenerator: (req) => {
+            const init = req.headers['x-telegram-init-data'];
+            return typeof init === 'string' ? init.slice(0, 64) : req.ip;
+          },
+        },
+      },
       schema: {
         tags: ['Auth'],
         body: LoginRequestSchema,
-        response: { 200: LoginResponseSchema, 401: ErrorResponseSchema, 502: ErrorResponseSchema },
+        response: {
+          200: LoginResponseSchema,
+          401: ErrorResponseSchema,
+          429: ErrorResponseSchema,
+          502: ErrorResponseSchema,
+        },
       },
     },
     async (req) => {

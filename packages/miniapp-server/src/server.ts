@@ -1,3 +1,4 @@
+import rateLimit from '@fastify/rate-limit';
 import Fastify, { type FastifyInstance } from 'fastify';
 import {
   type ZodTypeProvider,
@@ -42,6 +43,7 @@ export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> 
   app.decorate('cardApi', opts.cardApi);
   await app.register(requestIdPlugin);
   await app.register(errorHandlerPlugin);
+  await app.register(rateLimit, { global: false });
   await app.register(initDataAuthPlugin, {
     botToken: opts.config.telegramBotToken,
     maxAgeSeconds: 24 * 3600,
