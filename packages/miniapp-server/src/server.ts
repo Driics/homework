@@ -9,6 +9,8 @@ import type { Config } from './config.js';
 import { errorHandlerPlugin } from './plugins/errorHandler.js';
 import { initDataAuthPlugin } from './plugins/initDataAuth.js';
 import { requestIdPlugin } from './plugins/requestId.js';
+import { requireSessionPlugin } from './plugins/requireSession.js';
+import { cardRoutes } from './routes/cards.js';
 import { healthRoutes } from './routes/health.js';
 import { loginRoutes } from './routes/login.js';
 import { logoutRoutes } from './routes/logout.js';
@@ -48,5 +50,7 @@ export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> 
   await app.register(sessionRoutes);
   await app.register(loginRoutes);
   await app.register(logoutRoutes);
+  await app.register(requireSessionPlugin);
+  await app.register(cardRoutes);
   return app;
 }
