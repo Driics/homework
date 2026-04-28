@@ -9,6 +9,7 @@ import type { Config } from './config.js';
 import { authPlugin } from './plugins/auth.js';
 import { errorHandlerPlugin } from './plugins/errorHandler.js';
 import { requestIdPlugin } from './plugins/requestId.js';
+import { swaggerPlugin } from './plugins/swagger.js';
 import { authRoutes } from './routes/auth.js';
 import { cardRoutes } from './routes/cards.js';
 import { healthRoutes } from './routes/health.js';
@@ -41,6 +42,10 @@ export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> 
     origin: opts.config.corsOrigin,
     methods: ['GET', 'POST'],
   });
+
+  if (opts.config.nodeEnv !== 'production') {
+    await app.register(swaggerPlugin);
+  }
 
   await app.register(healthRoutes);
   await app.register(authRoutes(opts.config));
