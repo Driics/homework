@@ -13,6 +13,7 @@ import { authRoutes } from './routes/auth.js';
 import { cardRoutes } from './routes/cards.js';
 import { healthRoutes } from './routes/health.js';
 import { meRoutes } from './routes/me.js';
+import { transactionRoutes } from './routes/transactions.js';
 
 export type BuildOptions = { prisma: PrismaClient; config: Config };
 
@@ -31,6 +32,7 @@ export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> 
   await app.register(authRoutes(opts.config));
   await app.register(meRoutes);
   await app.register(cardRoutes);
+  await app.register(transactionRoutes);
   return app;
 }
 
