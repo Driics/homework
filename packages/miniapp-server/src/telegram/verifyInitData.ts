@@ -49,9 +49,16 @@ export function verifyInitData(
 
   const userRaw = params.get('user');
   if (!userRaw) throw new InvalidInitDataError('Missing user');
-  let parsed: Record<string, unknown>;
+  type RawUser = {
+    id?: unknown;
+    first_name?: unknown;
+    last_name?: unknown;
+    username?: unknown;
+    language_code?: unknown;
+  };
+  let parsed: RawUser;
   try {
-    parsed = JSON.parse(userRaw) as Record<string, unknown>;
+    parsed = JSON.parse(userRaw) as RawUser;
   } catch {
     throw new InvalidInitDataError('Malformed user');
   }
@@ -69,13 +76,11 @@ export function verifyInitData(
   }
 
   const user: TelegramUser = {
-    id: parsed.id,
+    id: parsed.id as number,
     firstName: parsed.first_name as string,
-    ...(typeof parsed.last_name === 'string' ? { lastName: parsed.last_name as string } : {}),
-    ...(typeof parsed.username === 'string' ? { username: parsed.username as string } : {}),
-    ...(typeof parsed.language_code === 'string'
-      ? { languageCode: parsed.language_code as string }
-      : {}),
+    ...(typeof parsed.last_name === 'string' ? { lastName: parsed.last_name } : {}),
+    ...(typeof parsed.username === 'string' ? { username: parsed.username } : {}),
+    ...(typeof parsed.language_code === 'string' ? { languageCode: parsed.language_code } : {}),
   };
   return { user, authDate, queryId: params.get('query_id') };
 }

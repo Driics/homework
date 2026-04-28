@@ -57,7 +57,8 @@ export class CardApiClient {
     o: { body?: unknown; token?: string },
   ): Promise<T> {
     const url = `${this.opts.baseUrl}${path}`;
-    const headers: Record<string, string> = { 'content-type': 'application/json' };
+    type Headers = { 'content-type': string; authorization?: string };
+    const headers: Headers = { 'content-type': 'application/json' };
     if (o.token) headers.authorization = `Bearer ${o.token}`;
     let res: Dispatcher.ResponseData;
     try {
