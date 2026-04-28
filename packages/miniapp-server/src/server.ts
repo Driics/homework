@@ -10,6 +10,8 @@ import { errorHandlerPlugin } from './plugins/errorHandler.js';
 import { initDataAuthPlugin } from './plugins/initDataAuth.js';
 import { requestIdPlugin } from './plugins/requestId.js';
 import { healthRoutes } from './routes/health.js';
+import { loginRoutes } from './routes/login.js';
+import { logoutRoutes } from './routes/logout.js';
 import { sessionRoutes } from './routes/session.js';
 import type { SessionStore } from './session/session.js';
 
@@ -44,5 +46,7 @@ export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> 
   });
   await app.register(healthRoutes);
   await app.register(sessionRoutes);
+  await app.register(loginRoutes);
+  await app.register(logoutRoutes);
   return app;
 }
