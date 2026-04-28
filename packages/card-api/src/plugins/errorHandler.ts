@@ -2,8 +2,14 @@ import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
 import { AppError, ValidationError } from '../errors.js';
 
-function isFastifyValidationError(err: unknown): err is { validation: unknown[]; message: string } {
-  return typeof err === 'object' && err !== null && 'validation' in err;
+function isFastifyValidationError(
+  err: unknown,
+): err is { validation?: unknown[]; message: string; code?: string } {
+  if (typeof err !== 'object' || err === null) return false;
+  return (
+    'validation' in err ||
+    ('code' in err && (err as { code: unknown }).code === 'FST_ERR_VALIDATION')
+  );
 }
 
 const plugin: FastifyPluginAsync = async (app) => {

@@ -9,6 +9,7 @@ import type { Config } from './config.js';
 import { authPlugin } from './plugins/auth.js';
 import { errorHandlerPlugin } from './plugins/errorHandler.js';
 import { requestIdPlugin } from './plugins/requestId.js';
+import { authRoutes } from './routes/auth.js';
 import { healthRoutes } from './routes/health.js';
 
 export type BuildOptions = { prisma: PrismaClient; config: Config };
@@ -25,6 +26,7 @@ export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> 
   await app.register(errorHandlerPlugin);
   await app.register(authPlugin, { jwtSecret: opts.config.jwtSecret });
   await app.register(healthRoutes);
+  await app.register(authRoutes(opts.config));
   return app;
 }
 
