@@ -1,10 +1,10 @@
 import { Bot, InlineKeyboard } from 'grammy';
 import type { UserFromGetMe } from 'grammy/types';
 
-export type BotConfig = { token: string; miniappPublicUrl: string; botInfo?: UserFromGetMe };
+export type BotConfig = { token: string; miniappPublicUrl: string };
 
-export function createBot(cfg: BotConfig): Bot {
-  const bot = new Bot(cfg.token, cfg.botInfo ? { botInfo: cfg.botInfo } : undefined);
+export function createBot(cfg: BotConfig, options?: { botInfo?: UserFromGetMe }): Bot {
+  const bot = new Bot(cfg.token, options?.botInfo ? { botInfo: options.botInfo } : undefined);
 
   bot.command('start', async (ctx) => {
     const keyboard = new InlineKeyboard().webApp('Open Cards', cfg.miniappPublicUrl);

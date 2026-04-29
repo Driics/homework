@@ -12,11 +12,10 @@ describe('createBot', () => {
       can_read_all_group_messages: false,
       supports_inline_queries: false,
     };
-    const bot = createBot({
-      token: '1:TEST',
-      miniappPublicUrl: 'https://example.ngrok.app',
-      botInfo,
-    });
+    const bot = createBot(
+      { token: '1:TEST', miniappPublicUrl: 'https://example.ngrok.app' },
+      { botInfo },
+    );
     await bot.init();
 
     const replies: unknown[] = [];
