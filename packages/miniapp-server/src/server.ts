@@ -5,6 +5,7 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod';
+import type { Bot } from 'grammy';
 import type { CardApiClient } from './cardApi/CardApiClient.js';
 import type { Config } from './config.js';
 import { errorHandlerPlugin } from './plugins/errorHandler.js';
@@ -16,6 +17,7 @@ import { healthRoutes } from './routes/health.js';
 import { loginRoutes } from './routes/login.js';
 import { logoutRoutes } from './routes/logout.js';
 import { sessionRoutes } from './routes/session.js';
+import { telegramWebhookRoutes } from './routes/telegramWebhook.js';
 import type { SessionStore } from './session/session.js';
 import { staticPlugin } from './static.js';
 
@@ -31,6 +33,7 @@ export type BuildOptions = {
   sessions: SessionStore;
   cardApi: CardApiClient;
   serveStatic?: boolean;
+  bot?: Bot;
 };
 
 export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> {
@@ -57,6 +60,9 @@ export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> 
   await app.register(cardRoutes);
   if (opts.serveStatic) {
     await app.register(staticPlugin({ rootDir: opts.config.staticDir }));
+  }
+  if (opts.config.botMode === 'webhook' && opts.bot) {
+    await app.register(telegramWebhookRoutes(opts.bot, opts.config.telegramBotToken));
   }
   return app;
 }
