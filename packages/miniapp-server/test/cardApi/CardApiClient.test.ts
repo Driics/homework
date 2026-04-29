@@ -35,14 +35,11 @@ describe('CardApiClient', () => {
   });
 
   it('login 401 → UnauthorizedError(INVALID_CREDENTIALS)', async () => {
-    mock
-      .get(baseUrl)
-      .intercept({ path: '/v1/auth/login', method: 'POST' })
-      .reply(401, {
-        code: 'INVALID_CREDENTIALS',
-        message: 'bad',
-        requestId: '00000000-0000-0000-0000-000000000000',
-      });
+    mock.get(baseUrl).intercept({ path: '/v1/auth/login', method: 'POST' }).reply(401, {
+      code: 'INVALID_CREDENTIALS',
+      message: 'bad',
+      requestId: '00000000-0000-0000-0000-000000000000',
+    });
     const c = new CardApiClient({ baseUrl, timeoutMs: 2000 });
     await expect(c.login({ email: 'a@b.com', password: 'x' })).rejects.toBeInstanceOf(
       UnauthorizedError,
@@ -50,14 +47,11 @@ describe('CardApiClient', () => {
   });
 
   it('listCards with expired token → UnauthorizedError(SESSION_EXPIRED)', async () => {
-    mock
-      .get(baseUrl)
-      .intercept({ path: '/v1/cards', method: 'GET' })
-      .reply(401, {
-        code: 'TOKEN_EXPIRED',
-        message: 'expired',
-        requestId: '00000000-0000-0000-0000-000000000000',
-      });
+    mock.get(baseUrl).intercept({ path: '/v1/cards', method: 'GET' }).reply(401, {
+      code: 'TOKEN_EXPIRED',
+      message: 'expired',
+      requestId: '00000000-0000-0000-0000-000000000000',
+    });
     const c = new CardApiClient({ baseUrl, timeoutMs: 2000 });
     await expect(c.listCards('bad-token')).rejects.toMatchObject({ code: 'SESSION_EXPIRED' });
   });

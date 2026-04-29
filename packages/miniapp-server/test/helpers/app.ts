@@ -13,6 +13,7 @@ export type TestDeps = {
 export async function buildTestApp(overrides?: {
   cardApi?: Partial<CardApiClient>;
   config?: Partial<Config>;
+  serveStatic?: boolean;
 }): Promise<TestDeps> {
   const sessions = new InMemorySessionStore();
   const defaultCardApi: CardApiClient = {
@@ -54,7 +55,7 @@ export async function buildTestApp(overrides?: {
     config,
     sessions,
     cardApi: { ...defaultCardApi, ...overrides?.cardApi } as CardApiClient,
-    serveStatic: false,
+    serveStatic: overrides?.serveStatic ?? false,
   });
   await app.ready();
   return {

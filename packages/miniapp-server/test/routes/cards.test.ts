@@ -53,7 +53,7 @@ describe('GET /api/cards', () => {
       userId: 'u1',
       fullName: 'A',
       cardApiToken: 't',
-      cardApiTokenExpiresAt: new Date(Date.now() + 60_000),
+      cardApiTokenExpiresAt: new Date(Date.now() + 3_600_000),
     });
     const r = await app.inject({
       method: 'GET',

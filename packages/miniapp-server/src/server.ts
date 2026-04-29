@@ -17,6 +17,7 @@ import { loginRoutes } from './routes/login.js';
 import { logoutRoutes } from './routes/logout.js';
 import { sessionRoutes } from './routes/session.js';
 import type { SessionStore } from './session/session.js';
+import { staticPlugin } from './static.js';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -54,5 +55,8 @@ export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> 
   await app.register(logoutRoutes);
   await app.register(requireSessionPlugin);
   await app.register(cardRoutes);
+  if (opts.serveStatic) {
+    await app.register(staticPlugin({ rootDir: opts.config.staticDir }));
+  }
   return app;
 }
