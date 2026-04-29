@@ -43,6 +43,18 @@ export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> 
   }).withTypeProvider<ZodTypeProvider>();
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
+  // Allow empty bodies with Content-Type: application/json (e.g. logout POST)
+  app.addContentTypeParser('application/json', { parseAs: 'string' }, (_req, body, done) => {
+    if (body === '' || body === null) {
+      done(null, null);
+      return;
+    }
+    try {
+      done(null, JSON.parse(body as string));
+    } catch (err) {
+      done(err as Error, undefined);
+    }
+  });
   app.decorate('sessions', opts.sessions);
   app.decorate('cardApi', opts.cardApi);
   await app.register(requestIdPlugin);
