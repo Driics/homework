@@ -25,7 +25,8 @@ describe('telegram/webapp', () => {
   it('attachBackButton wires onClick and returns a detach function', () => {
     const handler = () => {};
     const detach = attachBackButton(handler);
-    const wa = window.Telegram?.WebApp;
+    // biome-ignore lint/style/noNonNullAssertion: Telegram mock is guaranteed installed by beforeEach
+    const wa = window.Telegram!.WebApp;
     expect(wa.BackButton.show).toHaveBeenCalled();
     expect(wa.BackButton.onClick).toHaveBeenCalledWith(handler);
     detach();

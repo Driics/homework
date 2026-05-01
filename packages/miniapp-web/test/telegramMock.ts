@@ -19,14 +19,6 @@ export type FakeWebApp = {
   offEvent: ReturnType<typeof vi.fn>;
 };
 
-declare global {
-  interface Window {
-    Telegram?: {
-      WebApp: FakeWebApp;
-    };
-  }
-}
-
 export function installTelegramMock(
   initData = 'query_id=AAH&user=%7B%22id%22%3A1%7D&hash=abc',
 ): FakeWebApp {

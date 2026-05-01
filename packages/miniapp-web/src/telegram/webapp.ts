@@ -38,7 +38,8 @@ export function applyTelegramTheme(): void {
   for (const [key, value] of Object.entries(wa.themeParams)) {
     root.style.setProperty(`--tg-${key.replace(/_/g, '-')}`, value);
   }
-  root.dataset.theme = wa.colorScheme;
+  // biome-ignore lint/complexity/useLiteralKeys: noPropertyAccessFromIndexSignature requires bracket notation
+  root.dataset['theme'] = wa.colorScheme;
 }
 
 export function attachBackButton(handler: () => void): () => void {
