@@ -10,7 +10,11 @@ export function CardListPage() {
   const navigate = useNavigate();
 
   const onLogout = async () => {
-    await logout.mutateAsync();
+    try {
+      await logout.mutateAsync();
+    } catch {
+      // logout failure is non-critical; still navigate to login
+    }
     navigate('/login', { replace: true });
   };
 
