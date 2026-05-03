@@ -27,14 +27,12 @@ describe('LoginPage', () => {
   });
 
   it('submits credentials and posts to /api/login', async () => {
-    const fetchSpy = vi
-      .spyOn(globalThis, 'fetch')
-      .mockResolvedValue(
-        new Response(JSON.stringify({ user: { fullName: 'A' } }), {
-          status: 200,
-          headers: { 'content-type': 'application/json' },
-        }),
-      );
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ user: { fullName: 'A' } }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      }),
+    );
     renderPage();
     await userEvent.type(screen.getByLabelText(/email/i), 'a@b.com');
     await userEvent.type(screen.getByLabelText(/password/i), 'secret');

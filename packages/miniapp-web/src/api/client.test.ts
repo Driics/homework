@@ -10,14 +10,12 @@ describe('apiFetch', () => {
   });
 
   it('attaches X-Telegram-Init-Data header', async () => {
-    const fetchSpy = vi
-      .spyOn(globalThis, 'fetch')
-      .mockResolvedValue(
-        new Response(JSON.stringify({ ok: true }), {
-          status: 200,
-          headers: { 'content-type': 'application/json' },
-        }),
-      );
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      }),
+    );
     await apiFetch('/api/cards');
     const init = fetchSpy.mock.calls[0]?.[1];
     expect((init?.headers as Record<string, string>)['X-Telegram-Init-Data']).toBe(
@@ -63,14 +61,12 @@ describe('apiFetch', () => {
   });
 
   it('serializes JSON body and sets content-type', async () => {
-    const fetchSpy = vi
-      .spyOn(globalThis, 'fetch')
-      .mockResolvedValue(
-        new Response(JSON.stringify({ ok: true }), {
-          status: 200,
-          headers: { 'content-type': 'application/json' },
-        }),
-      );
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      }),
+    );
     await apiFetch('/api/login', { method: 'POST', body: { email: 'a@b', password: 'p' } });
     const init = fetchSpy.mock.calls[0]?.[1];
     expect(init?.method).toBe('POST');

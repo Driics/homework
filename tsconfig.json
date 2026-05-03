@@ -1,4 +1,9 @@
 {
   "files": [],
-  "references": [{ "path": "./packages/shared" }, { "path": "./packages/card-api" }]
+  "references": [
+    { "path": "./packages/shared" },
+    { "path": "./packages/card-api" },
+    { "path": "./packages/miniapp-server" },
+    { "path": "./packages/miniapp-web" }
+  ]
 }
