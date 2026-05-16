@@ -7,6 +7,11 @@ const BOT_TOKEN = process.env['TELEGRAM_BOT_TOKEN'] ?? '000000:fake-token-for-lo
 test('login → cards → detail → logout', async ({ page }) => {
   const signed = signInitData({ botToken: BOT_TOKEN, userId: 12345, firstName: 'Alice' });
 
+  // Block Telegram's WebApp library so it can't overwrite our stub after addInitScript runs.
+  await page.route('**/telegram-web-app.js', (route) =>
+    route.fulfill({ body: '', contentType: 'application/javascript' }),
+  );
+
   await page.addInitScript((initData: string) => {
     (window as unknown as { Telegram: unknown }).Telegram = {
       WebApp: {
