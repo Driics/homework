@@ -92,7 +92,7 @@ jobs:
         env:
           MINIAPP_BASE_URL: http://localhost:3000
           TELEGRAM_BOT_TOKEN: 000000:ci-fake-token
-        run: pnpm -F @homework/e2e test
+        run: pnpm -F @homework/e2e e2e
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v4
