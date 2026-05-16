@@ -17,5 +17,5 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
-  projects: [{ name: 'chromium', use: { ...devices['iPhone 14 Pro'] } }],
+  projects: [{ name: 'chromium', use: { ...devices['Pixel 7'] } }],
 });
