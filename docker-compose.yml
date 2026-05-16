@@ -1,0 +1,60 @@
+services:
+  card-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.card-api
+    image: homework/card-api:local
+    container_name: homework-card-api
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      HOST: 0.0.0.0
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DATABASE_URL: ${DATABASE_URL:-file:/data/dev.db}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-3600}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://miniapp-server:3000}
+    volumes:
+      - card-api-data:/data
+    ports:
+      - "4000:4000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/v1/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 180s
+    restart: unless-stopped
+
+  miniapp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.miniapp-server
+    image: homework/miniapp-server:local
+    container_name: homework-miniapp-server
+    depends_on:
+      card-api:
+        condition: service_started
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOST: 0.0.0.0
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?TELEGRAM_BOT_TOKEN is required}
+      MINIAPP_PUBLIC_URL: ${MINIAPP_PUBLIC_URL:?MINIAPP_PUBLIC_URL is required}
+      BOT_MODE: ${BOT_MODE:-polling}
+      CARD_API_URL: http://card-api:4000
+      CARD_API_TIMEOUT_MS: ${CARD_API_TIMEOUT_MS:-5000}
+      SESSION_TTL_SECONDS: ${SESSION_TTL_SECONDS:-3600}
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  card-api-data:
