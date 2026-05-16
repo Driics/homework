@@ -1,0 +1,48 @@
+# syntax=docker/dockerfile:1.7
+
+ARG NODE_VERSION=22-alpine
+
+# ---- deps stage ----
+FROM node:${NODE_VERSION} AS deps
+RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
+WORKDIR /repo
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+COPY packages/shared/package.json packages/shared/
+COPY packages/miniapp-server/package.json packages/miniapp-server/
+COPY packages/miniapp-web/package.json packages/miniapp-web/
+RUN pnpm install --frozen-lockfile \
+    --filter @homework/shared... \
+    --filter @homework/miniapp-server... \
+    --filter @homework/miniapp-web...
+
+# ---- build stage ----
+FROM deps AS build
+COPY packages/shared packages/shared
+COPY packages/miniapp-server packages/miniapp-server
+COPY packages/miniapp-web packages/miniapp-web
+COPY tsconfig.base.json ./
+RUN pnpm -F @homework/shared build \
+ && pnpm -F @homework/miniapp-web build \
+ && pnpm -F @homework/miniapp-server build
+
+# ---- runner stage ----
+FROM node:${NODE_VERSION} AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOST=0.0.0.0
+ENV STATIC_DIR=/app/packages/miniapp-web/dist
+
+COPY --from=build /repo/node_modules ./node_modules
+COPY --from=build /repo/packages/shared/dist ./packages/shared/dist
+COPY --from=build /repo/packages/shared/package.json ./packages/shared/
+COPY --from=build /repo/packages/shared/node_modules ./packages/shared/node_modules
+COPY --from=build /repo/packages/miniapp-server/dist ./packages/miniapp-server/dist
+COPY --from=build /repo/packages/miniapp-server/node_modules ./packages/miniapp-server/node_modules
+COPY --from=build /repo/packages/miniapp-server/package.json ./packages/miniapp-server/
+COPY --from=build /repo/packages/miniapp-web/dist ./packages/miniapp-web/dist
+
+EXPOSE 3000
+WORKDIR /app/packages/miniapp-server
+CMD ["node", "dist/main.js"]
