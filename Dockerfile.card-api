@@ -1,0 +1,50 @@
+# syntax=docker/dockerfile:1.7
+
+ARG NODE_VERSION=22-alpine
+
+# ---- deps stage ----
+FROM node:${NODE_VERSION} AS deps
+RUN apk add --no-cache openssl python3 make g++ libc6-compat
+RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
+WORKDIR /repo
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+COPY packages/shared/package.json packages/shared/
+COPY packages/card-api/package.json packages/card-api/
+RUN pnpm install --frozen-lockfile --filter @homework/shared... --filter @homework/card-api...
+
+# ---- build stage ----
+FROM deps AS build
+COPY packages/shared packages/shared
+COPY packages/card-api packages/card-api
+COPY tsconfig.base.json ./
+RUN pnpm -F @homework/shared build \
+ && pnpm -F @homework/card-api db:generate \
+ && pnpm -F @homework/card-api build
+
+# ---- runner stage ----
+FROM node:${NODE_VERSION} AS runner
+RUN apk add --no-cache openssl
+RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=4000
+ENV HOST=0.0.0.0
+ENV DATABASE_URL=file:/data/dev.db
+
+COPY --from=build /repo/node_modules ./node_modules
+COPY --from=build /repo/packages/shared/dist ./packages/shared/dist
+COPY --from=build /repo/packages/shared/package.json ./packages/shared/
+COPY --from=build /repo/packages/shared/node_modules ./packages/shared/node_modules
+COPY --from=build /repo/packages/card-api/dist ./packages/card-api/dist
+COPY --from=build /repo/packages/card-api/prisma ./packages/card-api/prisma
+COPY --from=build /repo/packages/card-api/node_modules ./packages/card-api/node_modules
+COPY --from=build /repo/packages/card-api/package.json ./packages/card-api/
+
+VOLUME ["/data"]
+EXPOSE 4000
+
+COPY docker/card-api-entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+WORKDIR /app/packages/card-api
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

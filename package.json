@@ -28,5 +28,8 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,md}": ["biome check --write --no-errors-on-unmatched"]
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["bcrypt", "@prisma/client", "prisma", "esbuild", "@biomejs/biome"]
   }
 }
