@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { createBot } from './bot/bot.js';
 import { CardApiClient } from './cardApi/CardApiClient.js';
 import { loadConfig } from './config.js';

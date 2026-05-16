@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { loadConfig } from './config.js';
 import { disconnectPrisma, getPrisma } from './db/prisma.js';
 import { createLogger } from './logger.js';
