@@ -1,3 +1,4 @@
+import compress from '@fastify/compress';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 import Fastify, { type FastifyInstance } from 'fastify';
@@ -60,6 +61,7 @@ export async function buildServer(opts: BuildOptions): Promise<FastifyInstance> 
   app.decorate('cardApi', opts.cardApi);
   await app.register(requestIdPlugin);
   await app.register(cors, { origin: true });
+  await app.register(compress, { global: true, threshold: 1024 });
   await app.register(errorHandlerPlugin);
   await app.register(rateLimit, { global: false });
   await app.register(initDataAuthPlugin, {
