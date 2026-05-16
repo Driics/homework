@@ -39,15 +39,19 @@ async function start() {
   process.on('SIGTERM', shutdown);
 
   await app.listen({ port: config.port, host: config.host });
-  if (config.botMode === 'polling') {
-    await bot.init();
-    void bot.start({
-      onStart: (me) => logger.info({ username: me.username }, 'bot polling started'),
-    });
-  } else {
-    await bot.api.setWebhook(
-      `${config.miniappPublicUrl}/telegram/webhook/${config.telegramBotToken}`,
-    );
+  try {
+    if (config.botMode === 'polling') {
+      await bot.init();
+      void bot.start({
+        onStart: (me) => logger.info({ username: me.username }, 'bot polling started'),
+      });
+    } else {
+      await bot.api.setWebhook(
+        `${config.miniappPublicUrl}/telegram/webhook/${config.telegramBotToken}`,
+      );
+    }
+  } catch (err) {
+    logger.error({ err }, 'bot startup failed; HTTP server continues to serve');
   }
   logger.info({ port: config.port, botMode: config.botMode }, 'miniapp-server listening');
 }
