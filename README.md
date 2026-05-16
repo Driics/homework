@@ -99,7 +99,7 @@ Required environment variables (full list in each `.env.example`):
 
 ```bash
 pnpm -r test                                 # unit + integration across all packages
-pnpm -F @homework/e2e test                   # Playwright happy-path (requires services running)
+pnpm test:e2e                                # Playwright happy-path (requires services running)
 pnpm -F @homework/card-api test --coverage   # per-package coverage with thresholds
 pnpm -F @homework/miniapp-web test --coverage
 ```
