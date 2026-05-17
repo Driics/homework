@@ -8,7 +8,7 @@ export function CardTile({ card }: Props) {
   return (
     <Link
       to={`/cards/${card.id}`}
-      className="block rounded-2xl bg-gradient-to-br from-slate-800 to-slate-950 p-4 text-white shadow-md transition active:scale-[0.98]"
+      className="block rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-950 p-4 text-white shadow-md transition active:scale-[0.98]"
     >
       <div className="flex items-start justify-between">
         <div className="text-xs uppercase tracking-widest opacity-70">{card.type}</div>
