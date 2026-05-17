@@ -43,9 +43,10 @@ test('login → cards → detail → logout', async ({ page }) => {
   await page.getByRole('button', { name: /log in/i }).click();
 
   await expect(page.getByText(/Your cards/)).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator('text=/••••/').first()).toBeVisible();
+  const firstCard = page.getByRole('link', { name: /\*\*\*\* \*\*\*\* \*\*\*\*/ }).first();
+  await expect(firstCard).toBeVisible();
 
-  await page.locator('text=/••••/').first().click();
+  await firstCard.click();
   await expect(page.getByText('Ledger')).toBeVisible();
   await expect(page.getByText('Available')).toBeVisible();
 
