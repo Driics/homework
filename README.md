@@ -24,7 +24,7 @@ The Card API has no Telegram knowledge — it can be exercised standalone with `
 ## 3. Prerequisites
 
 - **Node.js 22** (LTS) — `nvm install 22 && nvm use 22`
-- **pnpm 9+** — `corepack enable && corepack prepare pnpm@9 --activate`
+- **pnpm 10** — pinned via the `packageManager` field in `package.json`; run `corepack enable` and Corepack auto-installs the pinned version
 - **Docker** *(optional)* — for the one-command `docker compose up` path
 - **ngrok** or any HTTPS tunnel *(optional)* — only needed if you want to actually open the Mini App from a phone via Telegram
 
